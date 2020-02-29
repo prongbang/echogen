@@ -8,17 +8,17 @@ import (
 	"strings"
 )
 
-type FileGenerator struct {}
+type FileGenerator struct{}
 
 func (f *FileGenerator) templates(pkg string) map[string]string {
 	return map[string]string{
-		"datasource.go": f.dataSourceTemplate(pkg),
-		"handler.go":    f.handlerTemplate(pkg),
-		"provider.go":   f.providerTemplate(pkg),
-		"repository.go": f.repositoryTemplate(pkg),
-		"router.go":     f.routerTemplate(pkg),
-		"usecase.go":    f.useCaseTemplate(pkg),
-		"user.go":       f.modelTemplate(pkg),
+		"datasource.go":           f.dataSourceTemplate(pkg),
+		"handler.go":              f.handlerTemplate(pkg),
+		"provider.go":             f.providerTemplate(pkg),
+		"repository.go":           f.repositoryTemplate(pkg),
+		"router.go":               f.routerTemplate(pkg),
+		"usecase.go":              f.useCaseTemplate(pkg),
+		fmt.Sprintf("%s.go", pkg): f.modelTemplate(pkg),
 	}
 }
 
