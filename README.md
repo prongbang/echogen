@@ -1,9 +1,9 @@
-# gestgen
+# echogen
 
 ## Install
 
 ```shell script
-$ go install github.com/prongbang/gestgen
+$ go install github.com/prongbang/echogen
 ```
 
 ## How to use
@@ -11,12 +11,12 @@ $ go install github.com/prongbang/gestgen
 `-f`  feature name
 
 ```shell script
-$ gestgen -f user
+$ echogen -f user
 ```
 OR
 
 ```shell script
-$ cd project/pkg/api && gestgen -f user
+$ cd project/pkg/api && echogen -f user
 ```
 
 ## Output

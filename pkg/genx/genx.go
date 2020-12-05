@@ -1,4 +1,4 @@
-package utils
+package genx
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-type FileGenerator struct{}
+type GenX struct{}
 
-func (f *FileGenerator) templates(pkg string) map[string]string {
+func (f *GenX) templates(pkg string) map[string]string {
 	return map[string]string{
 		"datasource.go":           f.dataSourceTemplate(pkg),
 		"handler.go":              f.handlerTemplate(pkg),
@@ -22,7 +22,7 @@ func (f *FileGenerator) templates(pkg string) map[string]string {
 	}
 }
 
-func (f *FileGenerator) ensureDir(dir string) error {
+func (f *GenX) ensureDir(dir string) error {
 	err := os.MkdirAll(dir, 0755)
 	if err == nil || os.IsExist(err) {
 		return nil
@@ -31,7 +31,7 @@ func (f *FileGenerator) ensureDir(dir string) error {
 	}
 }
 
-func (f *FileGenerator) GenerateAll(feature string) {
+func (f *GenX) Process(feature string) {
 	log.Println("--> START")
 	for filename := range f.templates(feature) {
 		f.Generate(feature, filename)
@@ -39,7 +39,7 @@ func (f *FileGenerator) GenerateAll(feature string) {
 	log.Println("<-- END")
 }
 
-func (f *FileGenerator) Generate(feature string, filename string) {
+func (f *GenX) Generate(feature string, filename string) {
 	template := f.getTemplate(feature, filename)
 	currentDir, err := os.Getwd()
 	if err != nil {
@@ -60,7 +60,7 @@ func (f *FileGenerator) Generate(feature string, filename string) {
 	}
 }
 
-func (f *FileGenerator) dataSourceTemplate(pkg string) string {
+func (f *GenX) dataSourceTemplate(pkg string) string {
 	return fmt.Sprintf(`package %s
 
 type DataSource interface {
@@ -77,7 +77,7 @@ func NewDataSource(dbSource database.DataSource) DataSource {
 }`, pkg)
 }
 
-func (f *FileGenerator) handlerTemplate(pkg string) string {
+func (f *GenX) handlerTemplate(pkg string) string {
 	return fmt.Sprintf(`package %s
 
 type Handler interface {
@@ -94,7 +94,7 @@ func NewHandler(uc UseCase) Handler {
 }`, pkg)
 }
 
-func (f *FileGenerator) providerTemplate(pkg string) string {
+func (f *GenX) providerTemplate(pkg string) string {
 	return fmt.Sprintf(`package %s
 
 import "github.com/google/wire"
@@ -108,7 +108,7 @@ var ProviderSet = wire.NewSet(
 )`, pkg)
 }
 
-func (f *FileGenerator) repositoryTemplate(pkg string) string {
+func (f *GenX) repositoryTemplate(pkg string) string {
 	return fmt.Sprintf(`package %s
 
 type Repository interface {
@@ -125,7 +125,7 @@ func NewRepository(ds DataSource) Repository {
 }`, pkg)
 }
 
-func (f *FileGenerator) routerTemplate(pkg string) string {
+func (f *GenX) routerTemplate(pkg string) string {
 	return fmt.Sprintf(`package %s
 
 import "github.com/labstack/echo"
@@ -147,7 +147,7 @@ func NewRouter(handle Handler) Router {
 }`, pkg)
 }
 
-func (f *FileGenerator) useCaseTemplate(pkg string) string {
+func (f *GenX) useCaseTemplate(pkg string) string {
 	return fmt.Sprintf(`package %s
 
 type UseCase interface {
@@ -164,7 +164,7 @@ func NewUseCase(repo Repository) UseCase {
 }`, pkg)
 }
 
-func (f *FileGenerator) modelTemplate(pkg string) string {
+func (f *GenX) modelTemplate(pkg string) string {
 	model := f.modelName(pkg)
 
 	return fmt.Sprintf(`package %s
@@ -174,17 +174,17 @@ type %s struct  {
 }`, pkg, model)
 }
 
-func (f *FileGenerator) getTemplate(pkg string, filename string) string {
+func (f *GenX) getTemplate(pkg string, filename string) string {
 	return f.templates(pkg)[filename]
 }
 
-func (f *FileGenerator) modelName(feature string) string {
+func (f *GenX) modelName(feature string) string {
 	first := strings.ToUpper(feature[:1])
 	last := feature[1:]
 	modelName := fmt.Sprintf("%s%s", first, last)
 	return modelName
 }
 
-func NewFileGenerator() FileGenerator {
-	return FileGenerator{}
+func New() GenX {
+	return GenX{}
 }
