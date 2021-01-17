@@ -3,6 +3,7 @@
 ## Install
 
 ```shell script
+$ go get -u github.com/prongbang/echogen
 $ go install github.com/prongbang/echogen
 ```
 
